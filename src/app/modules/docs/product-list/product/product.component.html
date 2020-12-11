@@ -1,0 +1,25 @@
+<mat-card class="product-card">
+    <img class="product-img" mat-card-image [src]="product.imgUrl" alt="Photo of a Shiba Inu">
+    <div class="product-details">
+        <mat-card-header>
+            <mat-card-title class="product-name">{{ product.name }}</mat-card-title>
+            <mat-card-subtitle>by {{ product.brand }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <p class="product-desc">
+                {{ product.description }}
+            </p>
+        </mat-card-content>
+        <mat-card-footer class="product-price">
+            <strong>&#8377; {{ product.price }}</strong>
+        </mat-card-footer>
+    </div>    
+    <mat-card-actions class="product-actions">
+        <button *ngIf="!quantityAddedList[index]" mat-raised-button color="primary" class="product-add-btn" (click)="addProduct(index)">Add</button>
+        <div *ngIf="quantityAddedList[index]" class="counter">
+            <mat-icon class="remove-icon" aria-hidden="false" aria-label="remove icon" [ngClass]="{ 'disabled': quantityAddedList[index] <= minQty }" (click)="decrement(index)">remove</mat-icon>
+            <span class="counter-data">{{ quantityAddedList[index] }}</span>
+            <mat-icon class="add-icon" aria-hidden="false" aria-label="add icon" [ngClass]="{ 'disabled': quantityAddedList[index] >= maxQty }" (click)="increment(index)">add</mat-icon>
+        </div>
+    </mat-card-actions>
+</mat-card>

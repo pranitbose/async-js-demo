@@ -1,0 +1,11 @@
+<div class="product-list-header">
+    <h2 class="margin-top">Product List</h2>
+    <hr>
+    <div class="cart">
+        <span class="cart-count">{{ getCartCount() }}</span>
+        <mat-icon class="cart-icon" aria-hidden="false" aria-label="cart icon">shopping_cart</mat-icon>
+    </div>
+</div>
+<div class="product-list-wrapper">
+    <app-product class="product" *ngFor="let product of productList; index as i" [product]="product" [quantityAdded]="quantityAddedList" [minQty]="minQty" [maxQty]="maxQty" [index]="i" (productAdded)="addProduct($event)"></app-product>
+</div>

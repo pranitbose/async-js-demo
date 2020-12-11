@@ -1,0 +1,15 @@
+<div>
+    <mat-card class="post-card" *ngFor="let post of posts; index as i">
+        <img class="post-img" mat-card-image [src]="post.imgURL" alt="Post image {{i}}">
+        <div class="post-details">
+            <mat-card-header>
+                <mat-card-title class="post-title">{{ post.title }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <p class="post-body">
+                    {{ post.body }}
+                </p>
+            </mat-card-content>
+        </div>
+    </mat-card>
+</div>

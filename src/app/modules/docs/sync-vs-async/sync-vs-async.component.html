@@ -1,0 +1,192 @@
+<div class="margin-top"><img src="assets/images/sync-vs-async.png" class="responsive-img" alt="sync-vs-async"></div>
+
+<div class="note">
+    <strong>Let's understand and clarify some of the key aspects of Asynchronous programming in JS:</strong>
+    <ul>
+        <li>We generally associate asynchronous behavior with Multi Threaded execution of any given tasks. But
+            JavaScript is a Single Threaded programming language.</li>
+        <li>If JavaScript is a Single Threaded, how is it Asynchronous?</li>
+        <li>If any task (X) is dependent on another task (Y) where task X is performing an asynchronous operation then
+            task Y also has to be executed asynchronously post completion of task X.</li>
+        <li>Never block the main thread of an application if a task can be made asynchronous. Just do it!</li>
+    </ul>
+</div>
+
+<h2 class="margin-top">Pull vs Push</h2>
+<hr>
+<p>Pull and Push are two different protocols that describe how a data Producer can communicate with a data Consumer.</p>
+<strong>What is Pull?</strong> In Pull systems, the Consumer determines when it receives data from the data Producer. The Producer itself is unaware of when the data will be delivered to the Consumer.
+<ul>
+    <li>Producer plays a Passive role: produces data when requested.</li>
+    <li>Consumer plays an Active role: decides when data is requested.</li>
+</ul>
+<br>
+<strong>What is Push?</strong> In Push systems, the Producer determines when to send data to the Consumer. The Consumer is unaware of when it will receive that data.
+<ul>
+    <li>Producer plays a Active role: produces data at its own pace.</li>
+    <li>Consumer plays an Passive role: reacts to received data.</li>
+</ul>
+
+<p><strong>Promises</strong> and <strong>Observables</strong> provide us with abstractions in JavaScript that help us
+    deal with the asynchronous nature of our applications.</p>
+
+<h2 class="margin-top">Promise</h2>
+<hr>
+<p>
+    A promise is an object that may produce a single value some time in the future: either a resolved value, or a reason
+    that it’s not resolved (e.g., a network error occurred). This lets asynchronous methods return values like
+    synchronous methods. Instead of immediately returning the final value, the asynchronous method returns a promise to
+    supply the value at some point in the future.
+</p>
+<div>
+    A Promise maybe in one of these 3 possible states:
+    <ul>
+        <li><strong>pending:</strong> initial state, neither fulfilled nor rejected.</li>
+        <li><strong>fulfilled:</strong> meaning that the operation was completed successfully.</li>
+        <li><strong>rejected:</strong> meaning that the operation failed.</li>
+    </ul>
+</div>
+<div class="grid">
+    <div class="half1">
+        <div class="code-title">Synchronous Function (Pull)</div>
+        <pre class="source-code">
+            <code>{{"
+    performSyncTasksV1(): void {
+        const birthdayWish = this.waitForBirthdayWishSync(5000);
+        console.log('Synchronous', birthdayWish);
+        console.log('I waited for the Birthday Wish 😊');
+    }
+    
+    waitForBirthdayWishSync(timeInMillis: number): string {
+        const start = Date.now();
+        while (Date.now() - start <= timeInMillis) {}
+    
+        return 'Happy Birthday 🎂';
+    }
+            "}}</code>
+        </pre>
+        <button mat-raised-button color="primary" (click)="performSyncTasksV1()">Run</button>
+    </div>
+    <div class="half2">
+        <div class="code-title">Asynchronous Promise (Push)</div>
+        <pre class="source-code">
+            <code>{{"
+    performAsyncTasksV1(): void {
+        this.waitForBirthdayWishAsync(5000)
+            .then((wish: string) => {
+                console.log('Asynchronous', wish);
+            }, err => console.log(err));
+        console.log('I did not wait for the Birthday Wish 😢');
+    }
+
+    waitForBirthdayWishAsync(timeInMillis: number) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve('Happy Birthday 🎂');
+            }, timeInMillis)
+        });
+    }
+            "}}</code>
+        </pre>
+        <button mat-raised-button color="primary" (click)="performAsyncTasksV1()">Run</button>
+    </div>
+</div>
+
+<h2 class="margin-top">Observable</h2>
+<hr>
+<p>
+    An Observable is a lazy Push collection of multiple values. It is a lazily evaluated computation that can synchronously or asynchronously return zero to (potentially) infinite values from the time it's invoked onwards. An Observable is a Producer of multiple values, "pushing" them to Observers (Consumers).
+</p>
+<div class="grid">
+    <div class="half1">
+        <div class="code-title">Synchronous Iterator (Pull)</div>
+        <pre class="source-code">
+            <code>{{"
+    performSyncTasksV2(): void {
+        const iter = waitForBirthdayWishesSync(5000);
+        let wishCount = iter.next();
+        while (!wishCount.done) {
+            console.log(`Synchronous Happy Birthday 🎂 from Person ${wishCount.value}`);
+            wishCount = iter.next();
+        }
+        console.log('I waited for all the Birthday Wishes 😊');
+    }
+    
+    function* waitForBirthdayWishesSync(timeInMillis: number) {
+        const start = Date.now();
+        let i = 1;
+        while (Date.now() - start <= timeInMillis) {
+            if (Date.now() - start === i * 1000) {
+                yield i;
+                i++;
+            }
+        }
+        return 'Everyone has already wished!';
+    }
+            "}}</code>
+        </pre>
+        <button mat-raised-button color="primary" (click)="performSyncTasksV2()">Run</button>
+    </div>
+    <div class="half2">
+        <div class="code-title">Asynchronous Observable (Push)</div>
+        <pre class="source-code">
+            <code>{{"
+    performAsyncTasksV2(): void {
+        const wishes$ = this.waitForBirthdayWishesAsync(5000)
+            .subscribe((wishCount: number) => {
+                console.log(`Asynchronous Happy Birthday 🎂 from Person ${wishCount}`);
+            }, (err: any) => {
+                console.log(`Cannot make Birthday wishes 😭 : ${err}`);
+            }, () => {
+                console.log('Everybody has wished for the Birthday! ✅');
+            });
+        console.log('I did not wait for the Birthday Wish 😢');
+    }
+
+    waitForBirthdayWishesAsync(timeInMillis: number) {
+        /** Using RxJS operators */
+        if (Number.isNaN(timeInMillis) || !Number.isFinite(timeInMillis) || !Number.isInteger(timeInMillis)) {
+            return throwError('Time in milliseconds is not a valid number');
+        }
+        const list: number[] = [];
+        for (let i = 1; i <= timeInMillis / 1000; i++) { list.push(i); }
+        return from(list).pipe(
+            // tap(val => console.log(`Spy value: ${val}`)),
+            concatMap(val => of(val).pipe(delay(1000)))
+        );
+    }
+            "}}</code>
+        </pre>
+        <button mat-raised-button color="primary" (click)="performAsyncTasksV2()">Run</button>
+    </div>
+</div>
+<h2 class="margin-top">Promise vs Observable</h2>
+<hr>
+<p>
+    A real world example of Promise would be buying food at restaurant. When we pay we get a ticket with an order number. Then, when that number is called we can go and get our food.
+</p>
+<div>
+    That ticket they gave us is our promise, that ticket tells us that we will be eventually getting our food, but that we don't have it yet. When they call that number to go get the food, it means that the promise is complete. But it turns out that a promise can be completed correctly or a mistake can occur.
+    For example, it may happen that the restaurant does not have the food we ordered so, when they call us with our number, two things may happen:
+    <ol>
+        <li>Our order is resolved and we get the food.</li>
+        <li>Our order is rejected and we get a reason why.</li>
+    </ol>
+</div>
+<strong>Key Points to remember regarding Promise:</strong>
+<ul>
+    <li>Emits only a single value at a time - You can only get your food once using the ticket</li>
+    <li>Not lazy - Your food starts getting prepared as soon as the order is processed</li>
+    <li>Not cancellable - Orders once placed cannot be cancelled</li>
+    <li>Cannot be retried - Orders that are rejected cannot be re-ordered using the same ticket</li>
+</ul>
+<p>
+    A real world example of Observable would be any online streaming service such Netflix, Spotify, etc. When we subscribe we get a subscription with a validity period. Then, using that valid subscription we can consume the services offered by these apps (On-Demand).
+</p>
+<strong>Key Points to remember regarding Observable:</strong>
+<ul>
+    <li>Emits a stream of multiple values over a period of time - Multiple videos are streamed to different users on-demand</li>
+    <li>Lazy - The videos starts streaming only when it is requested by the users</li>
+    <li>Cancellable - Subscriptions can be cancelled at any point of time. Videos can be paused or stopped.</li>
+    <li>Can be retried multiple times - You can subscribe and unsubscribe as many times as you want. If video playback fails to load due to poor network connectivity you can retry multiple times to connect to the streaming service.</li>
+</ul>

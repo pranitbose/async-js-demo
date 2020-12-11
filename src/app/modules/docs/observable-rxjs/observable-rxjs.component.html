@@ -1,0 +1,132 @@
+<h2 class="margin-top">Hot vs Cold Observable</h2>
+<hr>
+<p>
+    The main difference is that a <strong>cold observable creates</strong> a <strong>data producer</strong> for <strong>each subscriber</strong>, whereas a <strong>hot observable creates</strong> a <strong>data producer first</strong>, and <strong>each subscriber</strong> gets the <strong>data</strong> from <strong>one producer, starting</strong> from the <strong>moment of subscription</strong>.
+</p>
+<p>
+    Let’s compare watching a movie on Netflix to going into a movie theater. Think of yourself as an observer. Anyone who decides to watch Mission: Impossible on Netflix will get the entire movie, regardless of when they hit the play button. Netflix creates a new producer to stream a movie just for you. This is a <strong>cold observable</strong>.
+</p>
+<p>
+    If you go to a movie theater and the showtime is 4 p.m., the producer is created at 4 p.m., and the streaming begins. If some people (subscribers) are late to the show, they miss the beginning of the movie and can only watch it starting from the moment of arrival. This is a <strong>hot observable</strong>.
+</p>
+<p>
+    A <strong>cold observable</strong> starts producing data when some code invokes a subscribe() function on it. For example, your app may declare an observable providing a URL on the server to get certain products. The request will be made only when you subscribe to it. If another script makes the same request to the server, it’ll get the same set of data.<br>
+    A <strong>hot observable</strong> produces data even if no subscribers are interested in the data. For example, an accelerometer in your smartphone produces data about the position of your device, even if no app subscribes to this data. A server can produce the latest stock prices even if no user is interested in this stock.
+</p>
+
+<div class="margin-top"><img src="assets/images/observables.png" class="responsive-img" alt="observables"></div>
+
+<div class="grid margin-top">
+    <div class="half1">
+        <div class="code-title">Cold Observable</div>
+        <pre class="source-code">
+            <code>{{"
+    coldObservableSource() {
+        /** 
+            * Infinite observable source stream 
+            * emitting sequence of values at 1 second interval
+            */
+        return interval(1000)
+            .pipe(
+                take(6) // Take first 6 values before completing
+            );
+    }
+            "}}</code>
+        </pre>
+        <button mat-raised-button color="primary" (click)="triggerColdObservable()">Run</button>
+    </div>
+    <div class="half2">
+        <div class="code-title">Hot Observable</div>
+        <pre class="source-code">
+            <code>{{"
+    hotObservableSource() {
+        // Converting a Cold Observable into a Hot Observable
+        const source$ = this.coldObservableSource()
+            .pipe(
+                // Shares source and make it hot by calling connect()
+                publish()
+            ) as ConnectableObservable;
+        return source$;
+    }
+
+    const source$ = this.observableService.hotObservableSource();
+    // Source will not emit values until connect() is called
+    source$.connect();
+            "}}</code>
+        </pre>
+        <button mat-raised-button color="primary" (click)="triggerHotObservable()">Run</button>
+    </div>
+</div>
+<div class="grid margin-top">
+    <div class="half1">
+        <div class="code-title">Lazy Loaded Hot Observable</div>
+        <pre class="source-code">
+            <code>{{"
+    lazyLoadedHotObservableSource() {
+        // Converting a Cold Observable into a lazy loaded Hot Observable
+        return this.coldObservableSource()
+            .pipe(
+                /**
+                    * Shares source among multiple subscribers. 
+                    * Internally using publish() + refCount() to ensure that 
+                    * source is emitting in live (stream) mode but only once 
+                    * someone subscribes for first time
+                    */
+                share()
+            );
+    }
+            "}}</code>
+        </pre>
+        <button mat-raised-button color="primary" (click)="triggerLazyLoadedHotObservable()">Run</button>
+    </div>
+    <div class="half2">
+        <div class="code-title">RxJS Map & Flat Map Operations</div>
+        <pre class="source-code">
+            <code>{{"
+    mapSource() {
+        return this.coldObservableSource()
+            .pipe(
+                skip(1),
+                map(val => [val * 1, val * 2, val * 3])
+            );
+    }
+    
+    flatMapSource() {
+        return this.coldObservableSource()
+            .pipe(
+                skip(1),
+                flatMap(val => [val * 1, val * 2, val * 3])
+            );
+    }
+            "}}</code>
+        </pre>
+        <button mat-raised-button color="primary" (click)="triggerMapAndFlatMapOps()">Run</button>
+    </div>
+</div>
+<div class="grid margin-top">
+    <div class="full">
+        <div class="code-title">Request Timeout Simulation</div>
+        <pre class="source-code">
+            <code>{{"
+    timeoutExampleSource() {
+        return of(1000, 4000, 3000, 2000)
+            .pipe(
+                concatMap(duration =>
+                    this.makeRequest(duration).pipe(
+                        timeout(2500), // Timeout after 2.5 seconds
+                        // Handle error (Timeout Error)
+                        catchError(error => of(`Request timed out after: ${duration}`))
+                    )
+                )
+            );
+    }
+    
+    // simulate request
+    private makeRequest(timeToDelay) {
+        return of('Request Complete!').pipe(delay(timeToDelay));
+    }
+            "}}</code>
+        </pre>
+        <button mat-raised-button color="primary" (click)="triggerRequestTimeoutSimulation()">Run</button>
+    </div>
+</div>

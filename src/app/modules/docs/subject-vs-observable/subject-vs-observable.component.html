@@ -1,0 +1,88 @@
+<h2 class="margin-top">Subject vs Observable</h2>
+<hr>
+<strong>Observables</strong>
+<ul>
+    <li>Observables are cold: Code gets executed when they have at least a single observer</li>
+    <li>Creates copy of data: Observable creates copy of data for each observer</li>
+    <li>Uni-directional: Observer can not assign value to observable (source)</li>
+    <li>Gets the entire set of values no matter when the observer was created</li>
+    <li>Unicast: Can emit values from the observable not from any other component</li>
+</ul>
+<br>
+<strong>Subjects</strong>
+<ul>
+    <li>Subjects are hot: Code gets executed and value gets broadcast even if there is no observer</li>
+    <li>Shares data: Same data get shared between all observers</li>
+    <li>Bi-directional: Observer can assign value to observable (source)</li>
+    <li>You can miss all the values that are broadcast before creation of observer</li>
+    <li>Multicast: can cast values to multiple subscribers and can act as both subscribers and emmitter</li>
+</ul>
+
+<div class="grid margin-top">
+    <div class="half1">
+        <div class="code-title">Observable</div>
+        <pre class="source-code">
+            <code>{{"
+    observableSource() {
+        const obsSource$ = new Observable((observer) => {
+            observer.next(Math.random());
+        });
+    
+        return obsSource$;
+    }
+            "}}</code>
+        </pre>
+        <button mat-raised-button color="primary" (click)="triggerObservable()">Run</button>
+    </div>
+    <div class="half2">
+        <div class="code-title">Subject</div>
+        <pre class="source-code">
+            <code>{{"
+    subjectSource(): Subject {
+        // Create subject source
+        const subSource$ = new Subject();
+        // Modify the source by setting random number as data
+        subSource$.next(Math.random());
+    
+        return subSource$;
+    }
+            "}}</code>
+        </pre>
+        <button mat-raised-button color="primary" (click)="triggerSubject()">Run</button>
+    </div>
+</div>
+<div class="grid margin-top">
+    <div class="half1">
+        <div class="code-title">Replay Subject</div>
+        <pre class="source-code">
+            <code>{{"
+    replaySubjectSource(): ReplaySubject {
+        // Create subject source
+        const replaySubSource$ = new ReplaySubject();
+        // Modify the source by setting random number as data
+        replaySubSource$.next(Math.random());
+    
+        return replaySubSource$;
+        };
+    }
+            "}}</code>
+        </pre>
+        <button mat-raised-button color="primary" (click)="triggerReplaySubject()">Run</button>
+    </div>
+    <div class="half2">
+        <div class="code-title">Behavior Subject</div>
+        <pre class="source-code">
+            <code>{{"
+    behaviorSubjectSource(): BehaviorSubject {
+        // Create subject source
+        const bahviorSubSource$ = new BehaviorSubject(null);
+        // Modify the source by setting random number as data
+        bahviorSubSource$.next(Math.random());
+    
+        return bahviorSubSource$;
+    }
+            "}}</code>
+        </pre>
+        <button mat-raised-button color="primary" (click)="triggerBehaviorSubject()">Run</button>
+    </div>
+</div>

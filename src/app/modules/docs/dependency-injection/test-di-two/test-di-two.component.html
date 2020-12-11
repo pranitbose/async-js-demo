@@ -1,0 +1,42 @@
+<h2>Test DI Two Component</h2>
+<form class="font-wrapper-form">
+    <mat-form-field appearance="fill">
+        <mat-label>Select Local Font Size</mat-label>
+        <mat-select #localRef>
+            <mat-option value="12">Small</mat-option>
+            <mat-option value="24">Medium</mat-option>
+            <mat-option value="36">Large</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <br>
+    <button type="button" mat-raised-button [disabled]="!localRef.value" (click)="setLocalFontSize(localRef.value)">Set Locally</button>
+</form>
+<p [style.font-size.px]="getLocalFontSize()" [style.line-height.px]="getLocalFontSize()" class="di-result-text">Local Dependency Injection</p>
+<hr>
+<form class="font-wrapper-form">
+    <mat-form-field appearance="fill">
+        <mat-label>Select Module Font Size</mat-label>
+        <mat-select #moduleRef>
+            <mat-option value="12">Small</mat-option>
+            <mat-option value="24">Medium</mat-option>
+            <mat-option value="36">Large</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <br>
+    <button type="button" mat-raised-button [disabled]="!moduleRef.value" (click)="setModuleFontSize(moduleRef.value)">Set Module Level</button>
+</form>
+<p [style.font-size.px]="getModuleFontSize()" [style.line-height.px]="getModuleFontSize()" class="di-result-text">Module Dependency Injection</p>
+<hr>
+<form class="font-wrapper-form">
+    <mat-form-field appearance="fill">
+        <mat-label>Select Global Font Size</mat-label>
+        <mat-select #globalRef>
+            <mat-option value="12">Small</mat-option>
+            <mat-option value="24">Medium</mat-option>
+            <mat-option value="36">Large</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <br>
+    <button type="button" mat-raised-button [disabled]="!globalRef.value" (click)="setGlobalFontSize(globalRef.value)">Set Globally</button>
+</form>
+<p [style.font-size.px]="getGlobalFontSize()" [style.line-height.px]="getGlobalFontSize()" class="di-result-text">Global Dependency Injection</p>

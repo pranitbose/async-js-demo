@@ -1,0 +1,88 @@
+.product-card {
+    max-width: 90%;
+    height: 200px;
+    display: flex;
+    padding: 0;
+    margin: 1rem 0;
+    .product-img {
+        width: 200px;
+        border-radius: 4px 0 0 4px;
+        margin: 0;
+    }
+    .product-details {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        padding: 1rem;
+        .product-name {
+            display: -webkit-box;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+        }
+        .product-desc {
+            display: -webkit-box;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+        }
+        .product-price {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+    }
+    .product-actions {
+        display: flex;
+        align-items: center;
+        padding: 0;
+        margin: 0;
+        .product-add-btn {
+            width: 5rem;
+            margin: 1rem 1.5rem;
+        }
+    }
+}
+
+.counter {
+    height: 2rem;
+    width: 6rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 1rem;
+    border: 2px solid #3f51b5;
+    color: #3f51b5;
+    .counter-data {
+        width: 33%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-left: 2px solid #3f51b5;
+        border-right: 2px solid #3f51b5;
+        background: #3f51b5;
+        color: #fff;
+    }
+    .remove-icon, .add-icon {
+        cursor: pointer;
+        &.disabled {
+            cursor: none;
+            opacity: 60%;
+        }
+    }
+}
+
+@media only screen and (max-width: 599px) {
+    .product-card {
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+        .product-img { width: 100%; }
+        .product-actions { justify-content: flex-end; }
+    }
+}
+@media only screen and (min-width: 600px) and (max-width: 1199px) {
+    .product-card { max-width: 95%; }
+}

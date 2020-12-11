@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Post, User } from '../models/app-model';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { APOD, Post, User } from '../models/app-model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,31 @@ export class ApiService {
     private http: HttpClient,
     private matSnackBar: MatSnackBar
   ) { }
+
+  getAPOD(): Observable<APOD> {
+    return this.http.get('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY')
+      .pipe(
+        map(res => {
+          if (res && 'title' in res && 'url' in res && 'explanation' in res) {
+            const { title, url, explanation } = res;
+            return {
+              title,
+              imgUrl: url,
+              explanation
+            }
+          } else {
+            throw new Error();
+          }
+        }),
+        catchError(err => {
+          return of({
+            title: '',
+            imgUrl: 'https://api.nasa.gov/assets/img/general/apod.jpg',
+            explanation: ''
+          });
+        })
+      );
+  }
 
   getUsers(): Observable<User[]> {
     return this.http.get(`${this.BASE_URL}/users`)
@@ -38,7 +63,7 @@ export class ApiService {
           }
         }),
         catchError(err => {
-          this.showErrorSnackBar('No User details found!');
+          this.showErrorSnackBar('No user details found!');
           return of([]);
         })
       );
@@ -66,15 +91,15 @@ export class ApiService {
           }
         }),
         catchError(err => {
-          this.showErrorSnackBar('No Posts found for this user!');
+          this.showErrorSnackBar('No posts found for this user!');
           return of([]);
         })
       );
   }
 
-  private showErrorSnackBar(message: string, action: string = 'Ok'): void {
+  private showErrorSnackBar(message: string, action: string = 'OK'): void {
     this.matSnackBar.open(message, action, {
       duration: 3000
-    })
+    });
   }
 }

@@ -11,3 +11,9 @@ export interface Post {
     body: string,
     imgURL: string
 }
+
+export interface APOD {
+    title: string,
+    imgUrl: string,
+    explanation: string
+}

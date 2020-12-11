@@ -1,0 +1,14 @@
+<mat-toolbar color="primary" class="nav-toolbar">
+    <ul class="nav-primary">
+        <li class="nav-items" routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</li>
+        <li class="nav-items" routerLink="/docs" routerLinkActive="active">Docs</li>
+        <li class="nav-items">
+            <a href="https://github.com/pranitbose/sentiment-analysis" target="_blank" rel="noopener noreferer">Code</a>
+        </li>
+        <li *ngIf="!showLogoutBtn" class="nav-items" routerLink="/login" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Login</li>
+        <ng-container *ngIf="showLogoutBtn">
+            <li class="nav-items" routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Dashboard</li>
+            <li class="nav-items" (click)="logout()">Logout</li>
+        </ng-container>
+    </ul>
+</mat-toolbar>

@@ -1,5 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ShareDataService } from './core/services/share-data.service';
 
 @Component({
@@ -14,6 +15,7 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Retreive saved shared data state from LocalStorage on page init or reload
     const data: any = localStorage.getItem('data') || null;
     if (data) {
       this.shareData.sendData(JSON.parse(atob(data)));
@@ -22,10 +24,15 @@ export class AppComponent implements OnInit {
 
   @HostListener('window:beforeunload')
   saveSharedDataState(): void {
-    const subscription: Subscription = this.shareData.getData()
+    const unsubscribe$ = new Subject<void>();
+    this.shareData.getData()
+      .pipe(takeUntil(unsubscribe$))
       .subscribe(data => {
+        // Dump current shared data state in LocalStorage
         localStorage.setItem('data', btoa(JSON.stringify(data)));
-        subscription && subscription.unsubscribe();
+        // Unsubscribe to stop listening and to avoid side-effects
+        unsubscribe$.next();
+        unsubscribe$.complete();
       });
   }
 }

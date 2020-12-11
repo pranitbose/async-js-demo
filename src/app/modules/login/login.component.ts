@@ -38,9 +38,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       alert('Please select a user to continue!');
       return;
     }
-    console.log(user);
     // Route to dashboard
-    const data = { user };
+    const data = { user, isLoggedIn: true };
     this.shareData.sendData(data);
     localStorage.setItem('user', btoa(JSON.stringify(user)));
     this.router.navigateByUrl('/dashboard');
@@ -50,5 +49,5 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.apiService.getUsers()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((users: Array<User>) => this.users = users);
-    }
+  }
 }

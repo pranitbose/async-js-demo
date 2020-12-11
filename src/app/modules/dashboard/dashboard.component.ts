@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Post } from 'src/app/core/models/app-model';
-import { ApiService } from 'src/app/core/services/api.service';
-import { ShareDataService } from 'src/app/core/services/share-data.service';
+import { Post } from '../../core/models/app-model';
+import { ApiService } from '../../core/services/api.service';
+import { ShareDataService } from '../../core/services/share-data.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,10 +12,11 @@ import { ShareDataService } from 'src/app/core/services/share-data.service';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 
-  userID: number = NaN;
-  username: string = '';
+  name: string = '';
   posts: Post[] = [];
-
+  postsFetched = false;
+  
+  private userID: number;
   private unsubscribe$: Subject<void> = new Subject<void>();
 
   constructor(
@@ -37,6 +38,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((posts: Array<Post>) => {
         this.posts = posts;
+        this.postsFetched = true;
       });
   }
 
@@ -44,10 +46,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.shareData.getData()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(data => {
-        console.log(data);
-        const { id = NaN, username = '' } = data.user;
+        const { id = NaN, name = '' } = data.user || {};
         this.userID = id;
-        this.username = username;
+        this.name = name;
         this.fetchPosts();
       });
   }

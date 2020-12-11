@@ -1,9 +1,11 @@
-<div>
+<app-header></app-header>
+<div class="posts-wrapper">
+    <h2>Posts by {{ name }}</h2>
     <mat-card class="post-card" *ngFor="let post of posts; index as i">
-        <img class="post-img" mat-card-image [src]="post.imgURL" alt="Post image {{i}}">
+        <img class="post-img" mat-card-image [src]="post.imgURL" alt="Post {{i}}">
         <div class="post-details">
             <mat-card-header>
-                <mat-card-title class="post-title">{{ post.title }}</mat-card-title>
+                <mat-card-title class="post-title">#{{ post.id }} {{ post.title | titlecase }}</mat-card-title>
             </mat-card-header>
             <mat-card-content>
                 <p class="post-body">
@@ -12,4 +14,9 @@
             </mat-card-content>
         </div>
     </mat-card>
+    <div *ngIf="postsFetched && posts.length === 0" class="posts-not-found">
+        <span>No posts found for this user.</span>
+        <mat-icon class="refresh_icon" aria-hidden="false" aria-label="refresh icon" (click)="fetchPosts()">refresh</mat-icon>
+        <span class="refresh-text">Refresh</span>
+    </div>
 </div>

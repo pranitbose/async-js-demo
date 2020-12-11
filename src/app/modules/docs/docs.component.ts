@@ -9,6 +9,10 @@ export class DocsComponent {
 
   modules = [
     {
+      title: 'Home',
+      url: '/'
+    },
+    {
       title: 'Synchronous vs Asynchronous',
       url: '/docs'
     },
@@ -27,10 +31,6 @@ export class DocsComponent {
     {
       title: 'Nested Components',
       url: 'product-list'
-    },
-    {
-      title: 'HTTP Client',
-      url: 'http-client'
-    },
+    }
   ]
 }

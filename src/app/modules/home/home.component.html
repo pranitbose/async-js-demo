@@ -1,3 +1,9 @@
-<p>home works!</p>
-<a routerLink="login">Login</a>
-<a routerLink="docs">Docs</a>
+<app-header></app-header>
+<div class="landing-wrapper">
+    <h1>Astronomy Picture of the Day</h1>
+    <div class="apod">
+        <h2 class="apod-title">{{ apod.title }}</h2>
+        <img class="apod-img" [src]="apod.imgUrl" alt="apod">
+        <p class="apod-desc">{{ apod.explanation }}</p>
+    </div>
+</div>

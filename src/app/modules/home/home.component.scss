@@ -1,0 +1,31 @@
+.landing-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 0 0 0;
+    background: #282828;
+    color: #fff;
+    .apod {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .apod-title { font-weight: 400; }
+        .apod-img { width: 100%; }
+        .apod-desc { 
+            padding: 1rem;
+            text-align: justify;
+            font-weight: 300;
+        }
+    }
+}
+
+@media only screen and (min-width: 600px) {
+    .landing-wrapper {
+        .apod {
+            .apod-img { width: 80%; }
+            .apod-desc { padding: 2rem; }
+        }
+    }
+}
